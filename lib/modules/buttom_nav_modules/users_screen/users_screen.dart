@@ -12,15 +12,6 @@ class UsersScreen extends StatelessWidget {
 
   UsersScreen({Key? key}) : super(key: key);
 
-  // final LatLng currentPostion;
-
-  // void _getUserLocation() async {
-  //   var position = await GeolocatorPlatform.instance
-  //       .getCurrentPosition(locationSettings:const LocationSettings(accuracy: LocationAccuracy.high,),);
-  //
-  //     // currentPostion = LatLng(position.latitude, position.longitude);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialAppCubit, SocialAppStates>(
@@ -40,7 +31,8 @@ class UsersScreen extends StatelessWidget {
                       BitmapDescriptor.hueViolet),
                   infoWindow: InfoWindow(
                       title: "${SocialAppCubit.get(context).usersModel?.name}",
-                      snippet: "${SocialAppCubit.get(context).usersModel?.email}",
+                      snippet:
+                          "${SocialAppCubit.get(context).usersModel?.email}",
                       onTap: () {
                         // show users profile
                       }),

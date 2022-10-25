@@ -395,15 +395,15 @@ class SocialAppCubit extends Cubit<SocialAppStates> {
             .collection(postLikesFirestoreCollectionName)
             .snapshots()
             .listen((event) {
-          if (event.size > 0 &&
-              event.docs != null &&
-              event.docs.single != null &&
-              event.docs.single.get("like") != null &&
-              (event.docs.single.get("like")) as bool == true) {
-            postLikes.add(event.docs.length);
-          } else {
-            postLikes.add(0);
-          }
+          // if (event.size > 0 &&
+          //     event.docs != null &&
+          //     event.docs.single != null &&
+          //     event.docs.single.get("like") != null &&
+          //     (event.docs.single.get("like")) as bool == true) {
+          //   postLikes.add(event.docs.length);
+          // } else {
+          postLikes.add(0);
+          // }
           emit(SocialAppLoadLikesSuccessState());
         });
       }
@@ -709,18 +709,18 @@ class SocialAppCubit extends Cubit<SocialAppStates> {
     emit(SocialAppAddMarkersSuccessState());
   }
 
-  LatLng? currentPostion;
+  // LatLng? currentPostion;
 
-  void getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    );
+  // void getUserLocation() async {
+  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
+  //     locationSettings: const LocationSettings(
+  //       accuracy: LocationAccuracy.high,
+  //     ),
+  //   );
 
-    currentPostion = LatLng(position.latitude, position.longitude);
-    emit(SocialAppGetCurrentLocationSuccessState());
-  }
+  //   currentPostion = LatLng(position.latitude, position.longitude);
+  //   emit(SocialAppGetCurrentLocationSuccessState());
+  // }
 }
 
 enum PermissionGroup { locationAlways, locationWhenInUse }

@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key, this.email, this.password}) : super(key: key);
 
   @override
-   build(BuildContext context) {
+  build(BuildContext context) {
     if (email != null && password != null) {
       emailController.text = email!;
       passwordController.text = password!;
@@ -79,10 +79,9 @@ class LoginScreen extends StatelessWidget {
                       ),
                       Text(
                         "login now to communicate with others",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(color: Colors.grey,),
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                              color: Colors.grey,
+                            ),
                       ),
                       const SizedBox(
                         height: 40,

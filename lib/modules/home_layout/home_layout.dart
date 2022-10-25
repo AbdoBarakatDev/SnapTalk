@@ -24,7 +24,6 @@ class HomeLayout extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        SocialAppCubit.get(context).getUserLocation();
         // UsersModel model = SocialAppCubit.get(context).model!;
         // printMSG("model  is $model ");
         return Scaffold(
@@ -62,14 +61,15 @@ class HomeLayout extends StatelessWidget {
                 ),
               ]),
           appBar: AppBar(
-            title: Text(
-                SocialAppCubit.get(context).bottomNavScreenTitles[SocialAppCubit.get(context).index]),
+            title: Text(SocialAppCubit.get(context)
+                .bottomNavScreenTitles[SocialAppCubit.get(context).index]),
             actions: [
-              if (SocialAppCubit.get(context).index == 0||SocialAppCubit.get(context).index == 1)
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.search),
-              ),
+              if (SocialAppCubit.get(context).index == 0 ||
+                  SocialAppCubit.get(context).index == 1)
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.search),
+                ),
               if (SocialAppCubit.get(context).index == 0)
                 IconButton(
                   onPressed: () {},
@@ -79,7 +79,10 @@ class HomeLayout extends StatelessWidget {
                 onSelected: (value) =>
                     handleClick(context: context, value: value),
                 itemBuilder: (BuildContext context) {
-                  return {'Logout', AppCubit.get(context).isDark?"Light Mode":"Dark Mode"}.map((String choice) {
+                  return {
+                    'Logout',
+                    AppCubit.get(context).isDark ? "Light Mode" : "Dark Mode"
+                  }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),

@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    SocialAppCubit.get(context).getUserLocation();
+
     return Scaffold(
       body: BlocConsumer<SocialAppCubit, SocialAppStates>(
         listener: (context, state) {

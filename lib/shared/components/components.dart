@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_social/shared/styles/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
@@ -59,6 +60,38 @@ Widget defaultTextButton({
         ),
       ),
     );
+
+customAuthBackground(BuildContext context) {
+  return Column(
+    children: [
+      Container(
+        color: Colors.white,
+        height: MediaQuery.of(context).size.height * .35,
+        child: Container(
+          height: MediaQuery.of(context).size.height * .35,
+          decoration: BoxDecoration(
+              color: loginStyleMainColor,
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(90),
+              )),
+        ),
+      ),
+      Container(
+        color: loginStyleMainColor,
+        height: MediaQuery.of(context).size.height * .65,
+        child: Container(
+          height: MediaQuery.of(context).size.height * .65,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(90),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
 
 PreferredSizeWidget defaultAppBar({
   @required BuildContext? context,
@@ -150,8 +183,8 @@ Widget defaultTextFormField({
           prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 5, right: 5), child: prefix),
           prefixIconConstraints: prefix is Widget
-              ?const  BoxConstraints(maxWidth: 100, maxHeight: 50)
-              :const  BoxConstraints(minWidth: 90),
+              ? const BoxConstraints(maxWidth: 100, maxHeight: 50)
+              : const BoxConstraints(minWidth: 90),
           // prefixIcon: prefix is Icon ?prefix:Container(),
           // prefix: prefix is Widget?prefix:Container(),
           suffix: Padding(

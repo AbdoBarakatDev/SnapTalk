@@ -34,6 +34,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       color: Colors.green);
 }
 
+FirebaseOptions firebaseConfig = const FirebaseOptions(
+    apiKey: "AIzaSyCYx6jhdoGw0-ypJH9eAVJGc7JV7lHgBxI",
+    authDomain: "flutter-social-app-3fb9f.firebaseapp.com",
+    databaseURL: "https://flutter-social-app-3fb9f-default-rtdb.firebaseio.com",
+    projectId: "flutter-social-app-3fb9f",
+    storageBucket: "flutter-social-app-3fb9f.appspot.com",
+    messagingSenderId: "687957009454",
+    appId: "1:687957009454:web:694c334662fa83c4b76bbf",
+    measurementId: "G-JJPS84VH34");
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
