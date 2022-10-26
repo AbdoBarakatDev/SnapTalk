@@ -27,8 +27,9 @@ class ChatsScreen extends StatelessWidget {
               SocialAppCubit.get(context).allUsersIds.isNotEmpty &&
               SocialAppCubit.get(context).lastMessages.isNotEmpty &&
               SocialAppCubit.get(context).allUsersIds.length ==
-                  SocialAppCubit.get(context).lastMessages.length&&
-              SocialAppCubit.get(context).allUsersIds.length ==SocialAppCubit.get(context).allUsers.length,
+                  SocialAppCubit.get(context).lastMessages.length &&
+              SocialAppCubit.get(context).allUsersIds.length ==
+                  SocialAppCubit.get(context).allUsers.length,
           fallback: (context) => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -38,28 +39,71 @@ class ChatsScreen extends StatelessWidget {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          printMSG(
-                              "User ${SocialAppCubit.get(context).allUsers[index].name} Clicked / Id is :${SocialAppCubit.get(context).allUsers[index].uId} ");
-                          doWidgetNavigation(
-                              context,
-                              ChatDetailsScreen(
-                                  usersModel: SocialAppCubit.get(context)
-                                      .allUsers[index]));
-                        },
-                        child: buildChatUser(
-                            context: context,
-                            model: SocialAppCubit.get(context).allUsers[index],
-                            index: index),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                    itemCount: SocialAppCubit.get(context).allUsers.length),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 28,
+                                      backgroundColor: Colors.grey.shade200,
+                                      child: Icon(Icons.video_call),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text("start call")
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return buildOldChatUser(
+                                  context: context,
+                                  index: index,
+                                  model: SocialAppCubit.get(context)
+                                      .allUsers[index]);
+                            }
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 5),
+                          itemCount:
+                              SocialAppCubit.get(context).allUsers.length),
+                    ),
+                    Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                printMSG(
+                                    "User ${SocialAppCubit.get(context).allUsers[index].name} Clicked / Id is :${SocialAppCubit.get(context).allUsers[index].uId} ");
+                                doWidgetNavigation(
+                                    context,
+                                    ChatDetailsScreen(
+                                        usersModel: SocialAppCubit.get(context)
+                                            .allUsers[index]));
+                              },
+                              child: buildChatUser(
+                                  context: context,
+                                  model: SocialAppCubit.get(context)
+                                      .allUsers[index],
+                                  index: index),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider();
+                          },
+                          itemCount:
+                              SocialAppCubit.get(context).allUsers.length),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -101,6 +145,71 @@ class ChatsScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget buildOldChatUser(
+      {BuildContext? context, UsersModel? model, int? index}) {
+    return GestureDetector(
+      onTap: () {
+        printMSG(
+            "User ${SocialAppCubit.get(context!).allUsers[index!].name} Clicked / Id is :${SocialAppCubit.get(context).allUsers[index].uId} ");
+        doWidgetNavigation(
+            context,
+            ChatDetailsScreen(
+                usersModel: SocialAppCubit.get(context).allUsers[index]));
+      },
+      child: Center(
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage("${model?.profilePicture}"),
+                  radius: 28,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 2, bottom: 2),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.greenAccent.shade700,
+                    radius: 5,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Expanded(
+              child: SizedBox(
+                width: 70,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text("${model?.name}",
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: Theme.of(context!)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(
+                                  fontSize: 12, fontWeight: FontWeight.normal)
+                          // ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

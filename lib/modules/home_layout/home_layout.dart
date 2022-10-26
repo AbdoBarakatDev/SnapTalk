@@ -6,6 +6,7 @@ import 'package:flutter_social/app_cubit/cubit.dart';
 import 'package:flutter_social/modules/buttom_nav_modules/new_post/new_post.dart';
 
 import 'package:flutter_social/shared/components/components.dart';
+import 'package:flutter_social/shared/components/constants.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import '../../app_cubit/states.dart';
 
@@ -27,6 +28,9 @@ class HomeLayout extends StatelessWidget {
         // UsersModel model = SocialAppCubit.get(context).model!;
         // printMSG("model  is $model ");
         return Scaffold(
+          backgroundColor: AppCubit.get(context).isDark
+              ? darkThemeSecondColor
+              : lightThemePrimaryColor,
           bottomNavigationBar: BottomNavyBar(
               onItemSelected: (int value) {
                 SocialAppCubit.get(context).changeBottomNav(value);
@@ -55,14 +59,16 @@ class HomeLayout extends StatelessWidget {
                   activeColor: Colors.pink,
                 ),
                 BottomNavyBarItem(
+                  // icon: const Icon(Icons.settings_applications),
                   icon: const Icon(Icons.settings_applications),
                   title: const Text("Settings"),
                   activeColor: Colors.blue,
                 ),
               ]),
-          appBar: AppBar(
-            title: Text(SocialAppCubit.get(context)
-                .bottomNavScreenTitles[SocialAppCubit.get(context).index]),
+          appBar: defaultAppBar(
+            context: context,
+            title: SocialAppCubit.get(context)
+                .bottomNavScreenTitles[SocialAppCubit.get(context).index],
             actions: [
               if (SocialAppCubit.get(context).index == 0 ||
                   SocialAppCubit.get(context).index == 1)
@@ -92,47 +98,6 @@ class HomeLayout extends StatelessWidget {
               ),
             ],
           ),
-
-          // defaultAppBar(
-          //   context: context,
-          //   title: SocialAppCubit.get(context)
-          //       .bottomNavScreenTitles[SocialAppCubit.get(context).index],
-          //   actions: [
-          //     // IconButton(
-          //     //   onPressed: () {
-          //     //     SocialAppCubit.get(context).signOut(context);
-          //     //   },
-          //     //   icon: const Icon(Icons.logout),
-          //     // ),
-          //     IconButton(
-          //       onPressed: () {},
-          //       icon: const Icon(Icons.search),
-          //     ),
-          //     IconButton(
-          //       onPressed: () {},
-          //       icon: const Icon(Icons.notifications_none),
-          //     ),
-          //
-          //     PopupMenuButton<String>(
-          //       onSelected: (value) =>
-          //           handleClick(context: context, value: value),
-          //       itemBuilder: (BuildContext context) {
-          //         return {'Logout', 'Dark Mode'}.map((String choice) {
-          //           return PopupMenuItem<String>(
-          //             value: choice,
-          //             child: Text(choice),
-          //           );
-          //         }).toList();
-          //       },
-          //     ),
-          //     // IconButton(
-          //     //   onPressed: () {
-          //     //     AppCubit.get(context).changeThemeMode();
-          //     //   },
-          //     //   icon: const Icon(Icons.brightness_4_outlined),
-          //     // ),
-          //   ],
-          // ),
           body: SocialAppCubit.get(context)
               .bottomNavScreens[SocialAppCubit.get(context).index],
         );

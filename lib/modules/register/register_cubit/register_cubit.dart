@@ -14,6 +14,54 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  // void register(
+  //     {@required BuildContext? context,
+  //     @required String? email,
+  //     @required String? password,
+  //     @required String? name,
+  //     @required String? phone}) async {
+  //   emit(RegisterLoadingStates());
+  //   auth
+  //       .createUserWithEmailAndPassword(email: email!, password: password!)
+  //       .then((userCredential) {
+  //     userCreate(
+  //       context: context,
+  //       email: email,
+  //       name: name,
+  //       phone: phone,
+  //       uId: userCredential.user?.uid,
+  //       bio: "Type your bio...",
+  //       backgroundPicture:
+  //           "https://media.istockphoto.com/photos/user-based-blockchain-futuristic-technology-backgrounds-picture-id1344724504?b=1&k=20&m=1344724504&s=170667a&w=0&h=Nk0gXz9WkXGHifkv498rDoJl1uOC7iw-RsgFESKm0Ms=",
+  //       profilePicture:
+  //           "https://img.freepik.com/free-photo/profile-shot-brutal-man-with-thick-foxy-beard-wears-round-glasses-looks-thoughtfully-aside_273609-17433.jpg?t=st=1656947988~exp=1656948588~hmac=76af713dbfd35d1228f9c22864011a15aabd7df67514168d51aa0f05f9fc5fc4&w=740",
+  //     );
+  //     showSnackBar(
+  //         context: context,
+  //         message: "registered successfully",
+  //         states: SnackBarStates.SUCCESS);
+  //     doReplacementWidgetNavigation(
+  //         context!,
+  //         LoginScreen(
+  //           email: email,
+  //           password: password,
+  //         ));
+  //     printMSG(userCredential.user?.email);
+  //     printMSG(userCredential.user?.uid);
+  //     printMSG(userCredential.user?.email);
+  //     printMSG(userCredential.user?.uid);
+  //     emit(RegisterSuccessStates());
+  //   }).catchError((error) {
+  //     showSnackBar(
+  //         context: context,
+  //         message: error.message.toString(),
+  //         states: SnackBarStates.ERROR);
+
+  //     printMSG(error.toString());
+  //     emit(RegisterErrorStates(error.toString()));
+  //   });
+  // }
+
   void register(
       {@required BuildContext? context,
       @required String? email,
@@ -21,21 +69,23 @@ class RegisterCubit extends Cubit<RegisterStates> {
       @required String? name,
       @required String? phone}) async {
     emit(RegisterLoadingStates());
-    auth
-        .createUserWithEmailAndPassword(email: email!, password: password!)
-        .then((value) {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: email!, password: password!);
+
       userCreate(
         context: context,
         email: email,
         name: name,
         phone: phone,
-        uId: value.user?.uid,
+        uId: userCredential.user?.uid,
         bio: "Type your bio...",
         backgroundPicture:
             "https://media.istockphoto.com/photos/user-based-blockchain-futuristic-technology-backgrounds-picture-id1344724504?b=1&k=20&m=1344724504&s=170667a&w=0&h=Nk0gXz9WkXGHifkv498rDoJl1uOC7iw-RsgFESKm0Ms=",
         profilePicture:
             "https://img.freepik.com/free-photo/profile-shot-brutal-man-with-thick-foxy-beard-wears-round-glasses-looks-thoughtfully-aside_273609-17433.jpg?t=st=1656947988~exp=1656948588~hmac=76af713dbfd35d1228f9c22864011a15aabd7df67514168d51aa0f05f9fc5fc4&w=740",
       );
+
       showSnackBar(
           context: context,
           message: "registered successfully",
@@ -46,20 +96,36 @@ class RegisterCubit extends Cubit<RegisterStates> {
             email: email,
             password: password,
           ));
-      printMSG(value.user?.email);
-      printMSG(value.user?.uid);
-      printMSG(value.user?.email);
-      printMSG(value.user?.uid);
+      printMSG(userCredential.user?.email);
+      printMSG(userCredential.user?.uid);
+      printMSG(userCredential.user?.email);
+      printMSG(userCredential.user?.uid);
       emit(RegisterSuccessStates());
-    }).catchError((error) {
+    } catch (e) {
       showSnackBar(
           context: context,
-          message: error.message.toString(),
+          message: mapAuthCodeToMessage(e.toString()),
           states: SnackBarStates.ERROR);
 
-      printMSG(error.toString());
-      emit(RegisterErrorStates(error.toString()));
-    });
+      printMSG(mapAuthCodeToMessage(e.toString()));
+      emit(RegisterErrorStates(mapAuthCodeToMessage(e.toString())));
+    }
+  }
+
+  String mapAuthCodeToMessage(String authCode) {
+    String result = "";
+    print("=====> $authCode");
+    if (authCode.contains("invalid-password")) {
+      result = "Password provided is not corrected";
+    } else if (authCode.contains("invalid-email")) {
+      result = "Email provided is invalid";
+    } else if (authCode.contains("user-not-found")) {
+      result = "User Not Found";
+    } else if (authCode.contains("email-already-in-use")) {
+      result = "The email address is already in use by another account.";
+    }
+
+    return result;
   }
 
   void userCreate({
@@ -86,7 +152,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
         .collection("users")
         .doc(uId)
         .set(usersModel.toMap()!)
-        .then((value) {
+        .then((userCredential) {
       emit(UserCreationSuccessStates());
     }).catchError((error) {
       emit(UserCreationErrorStates(error.toString()));

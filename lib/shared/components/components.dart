@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_social/shared/components/constants.dart';
+import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import 'package:flutter_social/shared/styles/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
 Widget defaultButton({
@@ -97,16 +100,26 @@ PreferredSizeWidget defaultAppBar({
   @required BuildContext? context,
   String? title,
   List<Widget>? actions,
+  double? elevation = 0,
   Widget? leading,
 }) {
   return AppBar(
-    iconTheme:
-        Theme.of(context!).appBarTheme.iconTheme?.copyWith(color: Colors.blue),
+    elevation: elevation!,
+    actionsIconTheme: Theme.of(context!).iconTheme,
+    iconTheme: Theme.of(context).appBarTheme.iconTheme,
+    toolbarTextStyle: Theme.of(context).appBarTheme.toolbarTextStyle,
+    // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+    backgroundColor: AppCubit.get(context).isDark
+        ? darkThemeSecondColor
+        : lightThemePrimaryColor,
     actions: actions,
-    title: Text(title!),
+    title: Text(
+      title!,
+      style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+    ),
     leading: leading != null
         ? GestureDetector(child: leading, onTap: () => Navigator.pop(context))
-        : Container(),
+        : null,
   );
 }
 
@@ -115,7 +128,7 @@ Widget defaultTextFormField({
   String? Function()? onTab,
   required BuildContext context,
   String? Function(String? val)? onChange,
-  String? Function(String? val)? onSubmited,
+  String? Function(String? val)? onSubmitted,
   @required String? hintText,
   String? labelText,
   IconData? prefixIcon,
@@ -162,7 +175,7 @@ Widget defaultTextFormField({
         validator: validatorFunction,
         onTap: onTab,
         onChanged: onChange,
-        onFieldSubmitted: onSubmited,
+        onFieldSubmitted: onSubmitted,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         inputFormatters: [
           LengthLimitingTextInputFormatter(maxLength,

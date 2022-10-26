@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,32 +27,56 @@ class LoginCubit extends Cubit<LoginStates> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  // void login(
+  //     {@required BuildContext? context,
+  //     @required String? email,
+  //     @required String? password}) async {
+  //   emit(LoginLoadingStates());
+  //   await auth
+  //       .signInWithEmailAndPassword(email: email!, password: password!)
+  //       .then((value) {
+  //     CashHelper.putData(key: "uId", value: value.user?.uid);
+  //     printMSG("Sign value is ${value.user?.uid}");
+  //     SocialAppCubit.get(context!).getCurrentUser(id: value.user?.uid);
+  //     printMSG("Login Cubit Email is : ${value.user?.email}");
+  //     printMSG("Login Cubit uId is : ${value.user?.uid}");
+  //     emit(LoginSuccessStates(value.user?.uid));
+  //   }).catchError((error) {
+  //     printMSG("Error is: ${error.message.toString()}");
+  //     emit(LoginErrorStates(error.message.toString()));
+  //   });
+  // }
+
   void login(
       {@required BuildContext? context,
       @required String? email,
       @required String? password}) async {
     emit(LoginLoadingStates());
-    await auth
-        .signInWithEmailAndPassword(email: email!, password: password!)
-        .then((value) {
-      CashHelper.putData(key: "uId", value: value.user?.uid);
-      printMSG("Sign value is ${value.user?.uid}");
-      SocialAppCubit.get(context!).getCurrentUser(id: value.user?.uid);
-      printMSG("Login Cubit Email is : ${value.user?.email}");
-      printMSG("Login Cubit uId is : ${value.user?.uid}");
-      emit(LoginSuccessStates(value.user?.uid));
-    }).catchError((error) {
-      printMSG("Error is: ${error.message.toString()}");
-      emit(LoginErrorStates(error.message.toString()));
-    });
+    try {
+      UserCredential result = await auth.signInWithEmailAndPassword(
+          email: email!, password: password!);
+      CashHelper.putData(key: "uId", value: result.user?.uid);
+      printMSG("Sign value is ${result.user?.uid}");
+      SocialAppCubit.get(context!).getCurrentUser(id: result.user?.uid);
+      printMSG("Login Cubit Email is : ${result.user?.email}");
+      printMSG("Login Cubit uId is : ${result.user?.uid}");
+      emit(LoginSuccessStates(result.user?.uid));
+    } catch (e) {
+      printMSG("Error is: ${mapAuthCodeToMessage(e.toString())}");
+      emit(LoginErrorStates(mapAuthCodeToMessage(e.toString())));
+    }
   }
 
-  mapAuthCodeToMessage(String authCode) {
-    if (authCode.contains("auth/invalid-password")) {
-      return "Password provided is not corrected";
+  String mapAuthCodeToMessage(String authCode) {
+    String result = "";
+    print("=====> $authCode");
+    if (authCode.contains("wrong-password")) {
+      result = "Password provided is not corrected";
+    } else if (authCode.contains("invalid-email")) {
+      result = "Email provided is invalid";
+    } else if (authCode.contains("user-not-found")) {
+      result = "User Not Found";
     }
-    if (authCode.contains("auth/invalid-email")) {
-      return "Email provided is invalid";
-    }
+    return result;
   }
 }

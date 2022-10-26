@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 const Color baseIconsColor = Colors.white;
 final Color mainBackgroundColor = Colors.teal.shade900;
 final Color mainIconsColor = Colors.deepOrange.shade300;
+const Color darkThemePrimaryColor = Colors.black45;
+final Color darkThemeSecondColor = HexColor("333739");
+const Color lightThemePrimaryColor = Colors.white;
 
 final Color cardItemColor = Colors.teal.shade600.withOpacity(0.9);
 final Color baseTextItemColor = Colors.grey.shade200;
@@ -11,6 +15,8 @@ final Color calcBtnColor = Colors.red.shade300;
 
 const double mainCategoryItemWidth = 120;
 const double mainCategoryItemHeight = 120;
+
+
 
 
 // NAME         SIZE  WEIGHT  SPACING

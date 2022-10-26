@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_social/shared/components/constants.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 ThemeData lightTheme = ThemeData(
@@ -12,7 +13,7 @@ ThemeData lightTheme = ThemeData(
         fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black45),
     overline: TextStyle(
         fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black45),
-    headline1:  TextStyle(
+    headline1: TextStyle(
         fontSize: 96, fontWeight: FontWeight.bold, color: Colors.black45),
     headline2: TextStyle(
         fontSize: 60, fontWeight: FontWeight.bold, color: Colors.black45),
@@ -22,80 +23,111 @@ ThemeData lightTheme = ThemeData(
         fontSize: 34, fontWeight: FontWeight.bold, color: Colors.black45),
     headline5: TextStyle(
         fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black45),
-    headline6:  TextStyle(
+    headline6: TextStyle(
         fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black45),
     caption: TextStyle(fontSize: 12, color: Colors.black45),
     button: TextStyle(fontSize: 14, color: Colors.black45),
   ),
-  cardColor: Colors.white,
+  cardColor: lightThemePrimaryColor,
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    backgroundColor: Colors.white,
+    backgroundColor: lightThemePrimaryColor,
     selectedItemColor: Colors.deepOrange,
     unselectedItemColor: Colors.grey,
     type: BottomNavigationBarType.fixed,
   ),
   primarySwatch: Colors.deepOrange,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: lightThemePrimaryColor,
   appBarTheme: const AppBarTheme(
-      elevation: 0,
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
-      iconTheme:  IconThemeData(color: Colors.black),
-      // backwardsCompatibility: false,
-      systemOverlayStyle:  SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-      backgroundColor: Colors.white),
+    actionsIconTheme: IconThemeData(
+      color: Colors.black,
+    ),
+    foregroundColor: lightThemePrimaryColor,
+    toolbarTextStyle: TextStyle(color: Colors.black),
+    backgroundColor: lightThemePrimaryColor,
+    elevation: 0,
+    titleTextStyle: TextStyle(
+      color: Colors.black,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+    iconTheme: IconThemeData(color: Colors.black),
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: lightThemePrimaryColor,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  ),
 );
+
 ThemeData darkTheme = ThemeData(
   textTheme: const TextTheme(
     subtitle1: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     bodyText1: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     bodyText2: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     overline: TextStyle(
-        fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 10,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline1: TextStyle(
-        fontSize: 96, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 96,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline2: TextStyle(
-        fontSize: 60, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 60,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline3: TextStyle(
-        fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 48,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline4: TextStyle(
-        fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 34,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline5: TextStyle(
-        fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
     headline6: TextStyle(
-        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-    caption: TextStyle(fontSize: 12, color: Colors.white),
-    button: TextStyle(fontSize: 14, color: Colors.white),
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: lightThemePrimaryColor),
+    caption: TextStyle(fontSize: 12, color: lightThemePrimaryColor),
+    button: TextStyle(fontSize: 14, color: lightThemePrimaryColor),
   ),
-  cardColor: HexColor("333739"),
-  scaffoldBackgroundColor: HexColor("333739"),
+  cardColor: darkThemeSecondColor,
+  scaffoldBackgroundColor: darkThemeSecondColor,
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: HexColor("333739"),
+    backgroundColor: darkThemeSecondColor,
     type: BottomNavigationBarType.fixed,
     selectedItemColor: Colors.deepOrange,
     unselectedItemColor: Colors.grey,
   ),
   primarySwatch: Colors.deepOrange,
   appBarTheme: AppBarTheme(
+    elevation: 0,
+    foregroundColor: darkThemeSecondColor,
+    toolbarTextStyle: TextStyle(
+      color: darkThemeSecondColor,
+    ),
     titleTextStyle: const TextStyle(
-      color: Colors.white,
+      color: lightThemePrimaryColor,
       fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
-    iconTheme: const IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: lightThemePrimaryColor),
     systemOverlayStyle: SystemUiOverlayStyle(
-      statusBarColor: HexColor("333739"),
+      statusBarColor: darkThemeSecondColor,
       statusBarIconBrightness: Brightness.light,
     ),
-    backgroundColor: HexColor("333739"),
+    backgroundColor: darkThemeSecondColor,
   ),
 );

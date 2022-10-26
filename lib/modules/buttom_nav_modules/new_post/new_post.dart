@@ -31,7 +31,13 @@ class NewPostScreen extends StatelessWidget {
             appBar: defaultAppBar(
                 context: context,
                 title: "Create Post",
-                leading: const Icon(Icons.arrow_back_ios_outlined),
+                leading: GestureDetector(
+                  onTap: (() => Navigator.pop(context)),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.grey,
+                  ),
+                ),
                 actions: [
                   defaultTextButton(
                       textStyle: SocialAppCubit.get(context).postIsEmpty!
@@ -87,7 +93,8 @@ class NewPostScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(children: [
-                              Text("Abdo Ebrahim Barakat",
+                              Text(
+                                  "${SocialAppCubit.get(context).usersModel?.name}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1
@@ -125,16 +132,14 @@ class NewPostScreen extends StatelessWidget {
                                 .checkNewPostIsEmpty(value: value);
                           }
                         },
-                        onTap: (){
-                         if(newPostController!.text.isEmpty){
-                           SocialAppCubit.get(context)
-                               .checkNewPostIsEmpty(value: null);
-                         }else
-                           {
-                             SocialAppCubit.get(context)
-                                 .checkNewPostIsEmpty(value: newPostController!.text);
-                           }
-
+                        onTap: () {
+                          if (newPostController!.text.isEmpty) {
+                            SocialAppCubit.get(context)
+                                .checkNewPostIsEmpty(value: null);
+                          } else {
+                            SocialAppCubit.get(context).checkNewPostIsEmpty(
+                                value: newPostController!.text);
+                          }
                         },
                         // onFieldSubmitted: (value) {
                         //   if (value.isEmpty) {

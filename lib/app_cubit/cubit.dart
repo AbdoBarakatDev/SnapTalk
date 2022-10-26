@@ -20,7 +20,6 @@ import 'package:flutter_social/network/end_points.dart';
 import 'package:flutter_social/shared/components/components.dart';
 import 'package:flutter_social/shared/network/local/darkness_helper.dart';
 import 'package:flutter_social/shared/network/remote/dio_helper.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 

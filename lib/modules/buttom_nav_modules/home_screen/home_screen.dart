@@ -4,7 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social/app_cubit/cubit.dart';
 import 'package:flutter_social/app_cubit/states.dart';
 import 'package:flutter_social/models/new_post_model.dart';
+import 'package:flutter_social/modules/post_related_screens/group_screen.dart';
+import 'package:flutter_social/modules/post_related_screens/live_screen.dart';
+import 'package:flutter_social/modules/post_related_screens/reels_screen.dart';
+import 'package:flutter_social/modules/post_related_screens/room_screen.dart';
 import 'package:flutter_social/shared/components/components.dart';
+import 'package:flutter_social/shared/components/constants.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -44,36 +49,7 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: height! * 0.25,
-                          width: width,
-                          child: Card(
-                            margin: const EdgeInsets.all(8),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Stack(fit: StackFit.expand, children: [
-                              Image.network(
-                                "https://img.freepik.com/free-photo/pile-3d-popular-social-media-logos_1379-881.jpg?w=740&t=st=1653139102~exp=1653139702~hmac=3bfb526ee5ccfe048147b8c8e5e21f1c4c30b202ba8603935d9a75bf48550c82",
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Communicate with friends",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        ?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                              )
-                            ]),
-                          ),
-                        ),
+                        drawHomeCreatePost(context),
                         ListView.builder(
                             shrinkWrap: true,
                             physics: const BouncingScrollPhysics(),
@@ -108,7 +84,7 @@ class HomeScreen extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
-        color: AppCubit.get(context).appPrimaryColor,
+        color: Theme.of(context).cardColor,
         boxShadow: const [
           BoxShadow(
             color: Colors.black,
@@ -351,6 +327,109 @@ class HomeScreen extends StatelessWidget {
   Future<void> _pullRefresh(BuildContext? context) async {
     SocialAppCubit.get(context!).getPostsV2();
     SocialAppCubit.get(context).getPostsLikesV2();
+  }
+
+  List<IconData> relatedPostIcons = [
+    Icons.ondemand_video,
+    Icons.video_call_rounded,
+    Icons.groups_rounded,
+    Icons.video_call_rounded
+  ];
+  List<Widget> relatedPostScreens = const [
+    ReelsScreen(),
+    RoomScreen(),
+    GroupScreen(),
+    LiveScreen(),
+  ];
+  List<Color> relatedPostIconsColor = [
+    Colors.orange,
+    Colors.purple,
+    Colors.blue,
+    Colors.red
+  ];
+  List<String> relatedPostName = ["Reel", "Room", "Group", "Live"];
+
+  Widget drawHomeCreatePost(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "${SocialAppCubit.get(context).usersModel?.profilePicture}"),
+                    radius: 20,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Text(
+                          "What's on your mind?",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ]),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 6),
+              height: 45,
+              color: AppCubit.get(context).isDark
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade100,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return MaterialButton(
+                        color: AppCubit.get(context).isDark
+                            ? darkThemeSecondColor
+                            : Theme.of(context).cardColor,
+                        splashColor: relatedPostIconsColor[index],
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        onPressed: () {
+                          doWidgetNavigation(
+                              context, relatedPostScreens[index]);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              relatedPostIcons[index],
+                              color: relatedPostIconsColor[index],
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(relatedPostName[index])
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(
+                          width: 5,
+                        ),
+                    itemCount: relatedPostIcons.length),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

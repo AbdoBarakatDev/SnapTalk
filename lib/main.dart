@@ -43,6 +43,7 @@ FirebaseOptions firebaseConfig = const FirebaseOptions(
     messagingSenderId: "687957009454",
     appId: "1:687957009454:web:694c334662fa83c4b76bbf",
     measurementId: "G-JJPS84VH34");
+
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
