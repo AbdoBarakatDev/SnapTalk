@@ -8,8 +8,8 @@
 
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:label="flutter_social">
+        android:icon="@mipmap/launcher_icon"
+        android:label="snap talk">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD2cdVyvbn8WTvilngCXxFWvTYWZyCZFIk" />

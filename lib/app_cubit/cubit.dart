@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -67,9 +68,9 @@ class SocialAppCubit extends Cubit<SocialAppStates> {
     emit(SocialAppSignOutLoadingState());
     FirebaseAuth.instance.signOut().then((value) {
       CashHelper.clearData(key: "uId").then((value) {
-        // printMsg("From Sign Out Value is :$value");
+        log("From Sign Out Value is :$value");
         emit(SocialAppSignOutSuccessState());
-        // printMsg("Signing Out....  UID value :$uId");
+        log("Signing Out....  UID value :$uId");
         doReplacementWidgetNavigation(context, LoginScreen());
       });
     }).catchError((error) {

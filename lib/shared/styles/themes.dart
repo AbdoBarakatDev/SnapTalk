@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_social/shared/components/constants.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 ThemeData lightTheme = ThemeData(

@@ -6,6 +6,7 @@ import 'package:flutter_social/models/users_model.dart';
 import 'package:flutter_social/modules/login_screen/login_screen.dart';
 import 'package:flutter_social/modules/register/register_cubit/register_cubit_states.dart';
 import 'package:flutter_social/shared/components/components.dart';
+import 'package:intl_phone_field/phone_number.dart';
 
 class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(RegisterInitialStates());
@@ -101,32 +102,32 @@ class RegisterCubit extends Cubit<RegisterStates> {
       printMSG(userCredential.user?.email);
       printMSG(userCredential.user?.uid);
       emit(RegisterSuccessStates());
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       showSnackBar(
           context: context,
-          message: mapAuthCodeToMessage(e.toString()),
+          message: e.message.toString(),
           states: SnackBarStates.ERROR);
 
-      printMSG(mapAuthCodeToMessage(e.toString()));
-      emit(RegisterErrorStates(mapAuthCodeToMessage(e.toString())));
+      printMSG(e.message.toString());
+      emit(RegisterErrorStates(e.message.toString()));
     }
   }
 
-  String mapAuthCodeToMessage(String authCode) {
-    String result = "";
-    print("=====> $authCode");
-    if (authCode.contains("invalid-password")) {
-      result = "Password provided is not corrected";
-    } else if (authCode.contains("invalid-email")) {
-      result = "Email provided is invalid";
-    } else if (authCode.contains("user-not-found")) {
-      result = "User Not Found";
-    } else if (authCode.contains("email-already-in-use")) {
-      result = "The email address is already in use by another account.";
-    }
+  // String mapAuthCodeToMessage(String authCode) {
+  //   String result = "";
+  //   print("=====> $authCode");
+  //   if (authCode.contains("wrong-password")) {
+  //     result = "Password provided is not corrected";
+  //   } else if (authCode.contains("invalid-email")) {
+  //     result = "Email provided is invalid";
+  //   } else if (authCode.contains("user-not-found")) {
+  //     result = "User Not Found";
+  //   } else if (authCode.contains("email-already-in-use")) {
+  //     result = "The email address is already in use by another account.";
+  //   }
 
-    return result;
-  }
+  // return result;
+  // }
 
   void userCreate({
     @required BuildContext? context,

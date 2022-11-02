@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'package:flutter/services.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +7,12 @@ import 'package:flutter_social/modules/login_screen/login_cubit/login_cubit.dart
 import 'package:flutter_social/modules/login_screen/login_screen.dart';
 import 'package:flutter_social/modules/register/register_cubit/register_cubit.dart';
 import 'package:flutter_social/modules/register/register_cubit/register_cubit_states.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/components/components.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import 'package:flutter_social/shared/styles/colors.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter_social/utils/app_strings.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const String id = "RegisterScreen";
@@ -16,6 +20,7 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  String? fullMobileNumberWithCode;
   final formKey = GlobalKey<FormState>();
 
   RegisterScreen({Key? key}) : super(key: key);
@@ -45,7 +50,7 @@ class RegisterScreen extends StatelessWidget {
                               vertical: 20,
                             ),
                             child: Image.asset(
-                              "assets/images/snap_talk_logo.png",
+                              appLogoPath,
                               fit: BoxFit.fill,
                               height: 80,
                               width: 80,
@@ -59,11 +64,11 @@ class RegisterScreen extends StatelessWidget {
                                 height: 10,
                               ),
                               Text(
-                                "register now to communicate with others",
+                                AppStrings.sinUpSubTitle,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText1
-                                    ?.copyWith(color: Colors.grey),
+                                    ?.copyWith(color: Colors.grey.shade200),
                               ),
                               const SizedBox(
                                 height: 40,
@@ -76,8 +81,10 @@ class RegisterScreen extends StatelessWidget {
                                       child: defaultTextFormField(
                                         hintStyle:
                                             const TextStyle(color: Colors.grey),
-                                        labelText: "User Name",
-                                        hintText: "Type Your Name",
+                                        labelText:
+                                            AppStrings.userNameRegisterLabel,
+                                        hintText:
+                                            AppStrings.userNameRegisterHint,
                                         textInputAction: TextInputAction.next,
                                         prefix: const Icon(Icons.person),
                                         controller: userNameController,
@@ -103,19 +110,15 @@ class RegisterScreen extends StatelessWidget {
                                       child: defaultTextFormField(
                                         hintStyle:
                                             const TextStyle(color: Colors.grey),
-                                        hintText: "Type Email Address",
-                                        labelText: "Email",
+                                        hintText: AppStrings.emailHint,
+                                        labelText: AppStrings.emailLabel,
                                         textInputAction: TextInputAction.next,
                                         prefix: const Icon(Icons.lock_outlined),
                                         controller: emailController,
                                         validatorFunction: (String? value) {
                                           if (value!.isEmpty) {
                                             return "Email Address must not be empty";
-                                          } else if (!value.contains("@")) {
-                                            return "Email must be Contains @";
-                                          } else if (!((value
-                                                  .contains("gmail.com")) ||
-                                              (value.contains("yahoo.com")))) {
+                                          } else if (!isEmail(value)) {
                                             return "Email typed in a wrong format";
                                           } else {
                                             return null;
@@ -134,8 +137,8 @@ class RegisterScreen extends StatelessWidget {
                                       child: defaultTextFormField(
                                         hintStyle:
                                             const TextStyle(color: Colors.grey),
-                                        hintText: "Type Your Password",
-                                        labelText: "Password",
+                                        hintText: AppStrings.passwordHint,
+                                        labelText: AppStrings.passwordLabel,
                                         textInputAction: TextInputAction.next,
                                         prefix: const Icon(
                                           Icons.lock_outlined,
@@ -177,57 +180,27 @@ class RegisterScreen extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Expanded(
-                                      child: defaultTextFormField(
-                                        height: 70,
-                                        hintStyle:
-                                            const TextStyle(color: Colors.grey),
-                                        hintText: "Type Your Phone Number",
-                                        labelText: "Phone",
-                                        maxLength: RegisterCubit.get(context)
-                                            .maxLength,
-                                        textInputAction: TextInputAction.done,
-                                        prefix: Container(
-                                          alignment: Alignment.centerLeft,
-                                          margin: EdgeInsets.zero,
-                                          padding: EdgeInsets.zero,
-                                          child: buildCountryKeys(),
-                                        ),
-                                        controller: phoneController,
-                                        validatorFunction: (String? value) {
-                                          if (value!.isEmpty) {
-                                            return "Phone Number must not be empty";
-                                          } else if (value.length <
-                                              RegisterCubit.get(context)
-                                                  .maxLength) {
-                                            return "wrong number must be at least ${RegisterCubit.get(context).maxLength} digits";
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        borderRadius: 10,
-                                        textInputType: TextInputType.phone,
-                                        context: context,
-                                      ),
+                                      child: drawPhoneField(context),
                                     ),
                                   ],
                                 ),
                               ),
                               const SizedBox(
-                                height: 40,
+                                height: 10,
                               ),
                               ConditionalBuilder(
                                 condition: state is! RegisterLoadingStates,
                                 fallback: (context) => const Center(
                                     child: CircularProgressIndicator()),
                                 builder: (context) => defaultButton(
-                                  text: "REGISTER",
+                                  text: AppStrings.sinUp,
                                   function: () {
                                     if (formKey.currentState!.validate()) {
                                       formKey.currentState!.save();
                                       RegisterCubit.get(context).register(
                                           context: context,
                                           name: userNameController.text,
-                                          phone: phoneController.text,
+                                          phone: fullMobileNumberWithCode,
                                           email: emailController.text,
                                           password: passwordController.text);
                                     }
@@ -237,13 +210,17 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(
-                                height: 20,
+                                height: 5,
+                              ),
+                              drawSignInWithFacebookOrGoogle(),
+                              const SizedBox(
+                                height: 10,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Already have an account",
+                                    AppStrings.haveAnAccount,
                                     style: Theme.of(context)
                                         .textTheme
                                         .overline
@@ -255,7 +232,7 @@ class RegisterScreen extends StatelessWidget {
                                           Colors.white),
                                     ),
                                     child: Text(
-                                      "LOGIN",
+                                      AppStrings.login.toUpperCase(),
                                       style: TextStyle(color: defaultAppColor),
                                     ),
                                     onPressed: () {
@@ -282,34 +259,107 @@ class RegisterScreen extends StatelessWidget {
 
   buildTextHeading(BuildContext context) {
     return Text(
-      "REGISTER",
+      AppStrings.register.toUpperCase(),
       style: Theme.of(context).textTheme.headline3,
     );
   }
 
-  buildCountryKeys() {
-    return Center(
-      child: CountryCodePicker(
-        padding: EdgeInsets.zero,
-        onChanged: _onCountryChange,
-
-        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-        initialSelection: 'EG',
-        favorite: const ['+20', 'EG'],
-        // optional. Shows only country name and flag
-        showCountryOnly: false,
-        flagWidth: 25,
-        // optional. Shows only country name and flag when popup is closed.
-        showOnlyCountryWhenClosed: false,
-        // optional. aligns the flag and the Text left
-        alignLeft: false,
+  drawPhoneField(BuildContext context) {
+    return IntlPhoneField(
+      initialCountryCode: "EG",
+      controller: phoneController,
+      decoration: const InputDecoration(
+        isDense: true,
+        labelText: 'Phone Number',
+        border: OutlineInputBorder(
+          borderSide: BorderSide(),
+        ),
       ),
+      keyboardType: TextInputType.phone,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: (phoneNumber) {
+        log("=====>$phoneNumber");
+        log("=====>${phoneNumber!.completeNumber}");
+        log("=====>${phoneNumber.countryCode}");
+        log("=====>${phoneNumber.countryISOCode}");
+        log("=====>${phoneNumber.number}");
+        // String pattern = r'/^([+]\d{2})?\d{10}$/';
+        // RegExp regex = RegExp(pattern);
+        // if (phoneNumber.number.isEmpty) {
+        //   return 'Please enter mobile number';
+        // } else if (!regex.hasMatch(phoneNumber.number.trim().toString())) {
+        //   log("===================>>>>Not Valid Number");
+        //   return 'Please enter valid mobile number';
+        // } else {
+        //   return null;
+        // }
+      },
+      onChanged: (phone) {},
+      onSaved: (newValue) {
+        fullMobileNumberWithCode = newValue!.completeNumber.toString();
+        log('phoneController on: ${phoneController.text}');
+      },
+      onCountryChanged: (country) {
+        log('Country changed to: ${country.name}');
+      },
     );
   }
 
-  void _onCountryChange(CountryCode countryCode) {
-    RegisterCubit.get(buildContext!)
-        .maxLinesDetected(countryCode: countryCode.toString());
-    printMSG("New Country selected: ${countryCode.code}");
+  drawSignInWithFacebookOrGoogle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          AppStrings.or,
+          style: TextStyle(color: Colors.grey.shade600),
+        ),
+        const SizedBox(
+          height: 3,
+        ),
+        Text(AppStrings.signUpWith,
+            style: TextStyle(color: Colors.grey.shade600)),
+        const SizedBox(
+          height: 3,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                //todo: Sign up with Facebook
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage(facebookLogoPath),
+                backgroundColor: Colors.transparent,
+                radius: 25,
+              ),
+            ),
+            const SizedBox(
+              width: 25,
+            ),
+            GestureDetector(
+              onTap: () {
+                //todo: Sign up with Google
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage(googleLogoPath),
+                backgroundColor: Colors.transparent,
+                radius: 25,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
+}
+
+bool isEmail(String em) {
+  String p =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+  RegExp regExp = RegExp(p);
+
+  return regExp.hasMatch(em);
 }

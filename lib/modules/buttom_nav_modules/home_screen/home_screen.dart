@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social/app_cubit/cubit.dart';
 import 'package:flutter_social/app_cubit/states.dart';
 import 'package:flutter_social/models/new_post_model.dart';
+import 'package:flutter_social/modules/buttom_nav_modules/new_post/new_post.dart';
 import 'package:flutter_social/modules/post_related_screens/group_screen.dart';
 import 'package:flutter_social/modules/post_related_screens/live_screen.dart';
 import 'package:flutter_social/modules/post_related_screens/reels_screen.dart';
 import 'package:flutter_social/modules/post_related_screens/room_screen.dart';
 import 'package:flutter_social/shared/components/components.dart';
-import 'package:flutter_social/shared/components/constants.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -350,83 +351,86 @@ class HomeScreen extends StatelessWidget {
   List<String> relatedPostName = ["Reel", "Room", "Group", "Live"];
 
   Widget drawHomeCreatePost(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        margin: EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "${SocialAppCubit.get(context).usersModel?.profilePicture}"),
-                    radius: 20,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        Text(
-                          "What's on your mind?",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ]),
-                    ],
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () => doWidgetNavigation(context, NewPostScreen()),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Card(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          margin: EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          "${SocialAppCubit.get(context).usersModel?.profilePicture}"),
+                      radius: 20,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Text(
+                            "What's on your mind?",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 6),
-              height: 45,
-              color: AppCubit.get(context).isDark
-                  ? Colors.grey.shade800
-                  : Colors.grey.shade100,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return MaterialButton(
-                        color: AppCubit.get(context).isDark
-                            ? darkThemeSecondColor
-                            : Theme.of(context).cardColor,
-                        splashColor: relatedPostIconsColor[index],
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        onPressed: () {
-                          doWidgetNavigation(
-                              context, relatedPostScreens[index]);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              relatedPostIcons[index],
-                              color: relatedPostIconsColor[index],
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(relatedPostName[index])
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(
-                          width: 5,
-                        ),
-                    itemCount: relatedPostIcons.length),
-              ),
-            )
-          ],
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                height: 45,
+                color: AppCubit.get(context).isDark
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade100,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return MaterialButton(
+                          color: AppCubit.get(context).isDark
+                              ? darkThemeSecondColor
+                              : Theme.of(context).cardColor,
+                          splashColor: relatedPostIconsColor[index],
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          onPressed: () {
+                            doWidgetNavigation(
+                                context, relatedPostScreens[index]);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                relatedPostIcons[index],
+                                color: relatedPostIconsColor[index],
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(relatedPostName[index])
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                            width: 5,
+                          ),
+                      itemCount: relatedPostIcons.length),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_social/shared/components/constants.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import 'package:flutter_social/shared/styles/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -106,13 +106,14 @@ PreferredSizeWidget defaultAppBar({
   return AppBar(
     elevation: elevation!,
     actionsIconTheme: Theme.of(context!).iconTheme,
-    iconTheme: Theme.of(context).appBarTheme.iconTheme,
+    iconTheme: Theme.of(context).iconTheme,
     toolbarTextStyle: Theme.of(context).appBarTheme.toolbarTextStyle,
     // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
     backgroundColor: AppCubit.get(context).isDark
         ? darkThemeSecondColor
         : lightThemePrimaryColor,
     actions: actions,
+
     title: Text(
       title!,
       style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),

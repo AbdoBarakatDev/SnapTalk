@@ -42,7 +42,7 @@ class NewPostScreen extends StatelessWidget {
                   defaultTextButton(
                       textStyle: SocialAppCubit.get(context).postIsEmpty!
                           ? const TextStyle(color: Colors.grey)
-                          : const TextStyle(color: Colors.white),
+                          : TextStyle(),
                       text: "Post",
                       enabled: SocialAppCubit.get(context).postIsEmpty!
                           ? false

@@ -49,7 +49,6 @@ class EditProfileScreen extends StatelessWidget {
                 },
                 child: const Text(
                   "Update",
-                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ]),
@@ -74,7 +73,7 @@ class EditProfileScreen extends StatelessWidget {
                                   backgroundColor: Colors.red,
                                   color: Colors.blue,
                                   minHeight: 5,
-                                  )
+                                )
                               : Container(),
                           Column(
                             children: [
@@ -300,7 +299,8 @@ class EditProfileScreen extends StatelessWidget {
                                   controller: profileName,
                                   hintColor: Colors.grey,
                                   borderRadius: 10,
-                                  prefix: const Icon(Icons.person_outline_outlined),
+                                  prefix:
+                                      const Icon(Icons.person_outline_outlined),
                                   validatorFunction: (value) {
                                     if (value!.isEmpty) {
                                       return "Name must not be empty";

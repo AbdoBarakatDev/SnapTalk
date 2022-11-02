@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +27,7 @@ import 'package:provider/provider.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  printMSG(
-      "Notification details for onBackgroundMessage :${message.notification?.title.toString()}");
+  log("Notification details for onBackgroundMessage :${message.notification?.title.toString()}");
   showToast(
       message:
           "onBackground Message : ${message.notification?.title.toString()}",
@@ -48,19 +48,17 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   token = await FirebaseMessaging.instance.getToken();
-  printMSG("Token is : ${token.toString()}");
-
+  log("Token is : ${token.toString()}");
+  log("Uid is : $uId");
   FirebaseMessaging.onMessage.listen((event) {
-    printMSG(
-        "Notification details for onMessage : ${event.notification?.title.toString()}");
+    log("Notification details for onMessage : ${event.notification?.title.toString()}");
     showToast(
         message: "onMessage : ${event.notification?.title.toString()}",
         color: Colors.green);
   });
 
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
-    printMSG(
-        "Notification details for onMessageOpenedApp : ${event.notification?.title.toString()}");
+    log("Notification details for onMessageOpenedApp : ${event.notification?.title.toString()}");
     showToast(
         message: "onMessageOpenedApp : ${event.notification?.title.toString()}",
         color: Colors.green);
@@ -73,14 +71,14 @@ main() async {
   String? startUpWidgetID;
   bool? isDarkFromShared = CashHelper.getBoolean(key: "isDark");
   uId = CashHelper.getData(key: "uId");
-  printMSG("isDarkFromShared $isDarkFromShared");
+  log("isDarkFromShared $isDarkFromShared");
 
   if (uId != null) {
-    printMSG("Already Logged Before ${uId.toString()}");
+    log("Already Logged Before ${uId.toString()}");
     startUpWidget = const HomeLayout();
     startUpWidgetID = HomeLayout.id;
   } else {
-    printMSG("Didn't Logged Yet");
+    log("Didn't Logged Yet");
     startUpWidget = LoginScreen();
     startUpWidgetID = LoginScreen.id;
   }

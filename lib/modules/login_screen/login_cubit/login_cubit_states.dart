@@ -23,3 +23,12 @@ class LogOutSuccessStates extends LoginStates {}
 class LogOutFailStates extends LoginStates {}
 
 class LogOutLoadingStates extends LoginStates {}
+
+////===============
+class GoogleLoginGetCurrentUserStates extends LoginStates {}
+
+class SignOutLoadingState extends LoginStates {}
+
+class SignOutSuccessState extends LoginStates {}
+
+class SignOutFailState extends LoginStates {}

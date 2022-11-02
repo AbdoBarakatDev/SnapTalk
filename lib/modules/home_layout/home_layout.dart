@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social/app_cubit/cubit.dart';
 import 'package:flutter_social/modules/buttom_nav_modules/new_post/new_post.dart';
+import 'package:flutter_social/modules/login_screen/login_cubit/login_cubit.dart';
 
 import 'package:flutter_social/shared/components/components.dart';
-import 'package:flutter_social/shared/components/constants.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import '../../app_cubit/states.dart';
 
@@ -78,7 +79,9 @@ class HomeLayout extends StatelessWidget {
                 ),
               if (SocialAppCubit.get(context).index == 0)
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    LoginCubit.get(context).signOut(context);
+                  },
                   icon: const Icon(Icons.notifications_none),
                 ),
               PopupMenuButton<String>(
@@ -116,10 +119,10 @@ class HomeLayout extends StatelessWidget {
     });
   }
 
-  void handleClick({String? value, BuildContext? context}) {
+  void handleClick({String? value, BuildContext? context}) async {
     switch (value) {
       case 'Logout':
-        SocialAppCubit.get(context!).signOut(context);
+        await SocialAppCubit.get(context!).signOut(context);
         break;
       case 'Dark Mode':
         AppCubit.get(context!).changeThemeMode();

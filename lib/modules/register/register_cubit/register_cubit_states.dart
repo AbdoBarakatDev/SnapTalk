@@ -7,6 +7,7 @@ class RegisterLoadingStates extends RegisterStates {}
 class RegisterSuccessStates extends RegisterStates {}
 
 class UserCreationSuccessStates extends RegisterStates {}
+
 class UserCreationErrorStates extends RegisterStates {
   final String error;
 
@@ -14,6 +15,9 @@ class UserCreationErrorStates extends RegisterStates {
 }
 
 class RegisterChangePasswordVisibilityStates extends RegisterStates {}
+
+class RegisterChangePhoneNumberValueStates extends RegisterStates {}
+
 class ChangePhoneLengthStates extends RegisterStates {}
 
 class RegisterErrorStates extends RegisterStates {

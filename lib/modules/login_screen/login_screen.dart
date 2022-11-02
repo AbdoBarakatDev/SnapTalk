@@ -6,10 +6,12 @@ import 'package:flutter_social/modules/home_layout/home_layout.dart';
 import 'package:flutter_social/modules/login_screen/login_cubit/login_cubit.dart';
 import 'package:flutter_social/modules/login_screen/login_cubit/login_cubit_states.dart';
 import 'package:flutter_social/modules/register/register_screen.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/components/components.dart';
 import 'package:flutter_social/shared/cubit/app_cubit.dart';
 import 'package:flutter_social/shared/network/local/darkness_helper.dart';
 import 'package:flutter_social/shared/styles/colors.dart';
+import 'package:flutter_social/utils/app_strings.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String id = 'Login Screen';
@@ -37,7 +39,7 @@ class LoginScreen extends StatelessWidget {
         if (state is LoginSuccessStates) {
           showSnackBar(
               context: context,
-              message: "Successfully Login",
+              message: AppStrings.successfullyLoginMessage,
               states: SnackBarStates.SUCCESS);
           CashHelper.putData(key: "uId", value: state.id!).then((value) {
             doReplacementWidgetNavigation(context, const HomeLayout());
@@ -72,16 +74,16 @@ class LoginScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 20,
-                            ),
-                            child: Image.asset(
-                              "assets/images/snap_talk_logo.png",
-                              fit: BoxFit.fill,
-                              height: 80,
-                              width: 80,
-                            ),
-                          ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                ),
+                                child: Image.asset(
+                                  appLogoPath,
+                                  fit: BoxFit.fill,
+                                  height: 80,
+                                  width: 80,
+                                ),
+                              ),
                               Column(
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,12 +93,12 @@ class LoginScreen extends StatelessWidget {
                                     height: 10,
                                   ),
                                   Text(
-                                    "login now to communicate with others",
+                                    AppStrings.sinInSubTitle,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText1!
                                         .copyWith(
-                                          color: Colors.grey,
+                                          color: Colors.grey.shade200,
                                         ),
                                   ),
                                   const SizedBox(
@@ -104,89 +106,113 @@ class LoginScreen extends StatelessWidget {
                                   ),
                                   SizedBox(
                                     height: 160,
-                                    child: Column(
+                                    child: Stack(
+                                      alignment: Alignment.bottomRight,
                                       children: [
-                                        Expanded(
-                                          child: defaultTextFormField(
-                                            hintStyle: const TextStyle(
-                                                color: Colors.grey),
-                                            labelText: "Email",
-                                            hintText: "Email Address",
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            prefix: const Icon(
-                                                Icons.email_outlined),
-                                            controller: emailController,
-                                            validatorFunction: (String? value) {
-                                              if (value!.isEmpty) {
-                                                return "Email Address must not be empty";
-                                              } else {
-                                                return null;
-                                              }
-                                            },
-                                            borderRadius: 10,
-                                            textInputType:
-                                                TextInputType.emailAddress,
-                                            context: context,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: defaultTextFormField(
-                                            hintStyle: const TextStyle(
-                                                color: Colors.grey),
-                                            labelText: "Password",
-                                            hintText: "Password",
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            prefix:
-                                                const Icon(Icons.lock_outlined),
-                                            contentPadding: EdgeInsets.zero,
-                                            hidden: LoginCubit.get(context)
-                                                .isHidden,
-                                            suffixIcon: GestureDetector(
-                                              onTap: () {
-                                                LoginCubit.get(context)
-                                                    .changePasswordVisibility();
-                                              },
-                                              child: Icon(
-                                                LoginCubit.get(context).icon,
-                                                color:
-                                                    AppCubit.get(context).isDark
-                                                        ? Colors.grey.shade400
-                                                        : Colors.grey,
+                                        TextButton(
+                                            style: TextButton.styleFrom(
+                                                padding: EdgeInsets.zero,
+                                                alignment:
+                                                    Alignment.bottomRight),
+                                            onPressed: () {},
+                                            child: const Text(
+                                                AppStrings.forgotPassword)),
+                                        Column(
+                                          children: [
+                                            Expanded(
+                                              child: defaultTextFormField(
+                                                hintStyle: const TextStyle(
+                                                    color: Colors.grey),
+                                                labelText:
+                                                    AppStrings.emailLabel,
+                                                hintText: AppStrings.emailHint,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                prefix: const Icon(
+                                                    Icons.email_outlined),
+                                                controller: emailController,
+                                                validatorFunction:
+                                                    (String? value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Email Address must not be empty";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
+                                                borderRadius: 10,
+                                                textInputType:
+                                                    TextInputType.emailAddress,
+                                                context: context,
                                               ),
                                             ),
-                                            controller: passwordController,
-                                            validatorFunction: (String? value) {
-                                              if (value!.isEmpty) {
-                                                return "Password must not be empty";
-                                              } else {
-                                                return null;
-                                              }
-                                            },
-                                            onSubmitted: (value) {
-                                              if (formKey.currentState!
-                                                  .validate()) {
-                                                printMSG("Validated");
-                                                formKey.currentState?.save();
-                                                LoginCubit.get(context).login(
-                                                    context: context,
-                                                    email: emailController.text
-                                                        .trim(),
-                                                    password: passwordController
-                                                        .text
-                                                        .trim());
-                                              }
-                                            },
-                                            borderRadius: 10,
-                                            textInputType:
-                                                TextInputType.visiblePassword,
-                                            context: context,
-                                          ),
+                                            const SizedBox(height: 10),
+                                            Expanded(
+                                              child: defaultTextFormField(
+                                                hintStyle: const TextStyle(
+                                                    color: Colors.grey),
+                                                labelText:
+                                                    AppStrings.passwordLabel,
+                                                hintText:
+                                                    AppStrings.passwordHint,
+                                                textInputAction:
+                                                    TextInputAction.done,
+                                                prefix: const Icon(
+                                                    Icons.lock_outlined),
+                                                contentPadding: EdgeInsets.zero,
+                                                hidden: LoginCubit.get(context)
+                                                    .isHidden,
+                                                suffixIcon: GestureDetector(
+                                                  onTap: () {
+                                                    LoginCubit.get(context)
+                                                        .changePasswordVisibility();
+                                                  },
+                                                  child: Icon(
+                                                    LoginCubit.get(context)
+                                                        .icon,
+                                                    color: AppCubit.get(context)
+                                                            .isDark
+                                                        ? Colors.grey.shade400
+                                                        : Colors.grey,
+                                                  ),
+                                                ),
+                                                controller: passwordController,
+                                                validatorFunction:
+                                                    (String? value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Password must not be empty";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSubmitted: (value) {
+                                                  if (formKey.currentState!
+                                                      .validate()) {
+                                                    printMSG("Validated");
+                                                    formKey.currentState
+                                                        ?.save();
+                                                    LoginCubit.get(context).login(
+                                                        context: context,
+                                                        email: emailController
+                                                            .text
+                                                            .trim(),
+                                                        password:
+                                                            passwordController
+                                                                .text
+                                                                .trim());
+                                                  }
+                                                },
+                                                borderRadius: 10,
+                                                textInputType: TextInputType
+                                                    .visiblePassword,
+                                                context: context,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
+                                  drawLoginRemember(context),
                                   // const SizedBox(
                                   //   height: 40,
                                   // ),
@@ -195,7 +221,7 @@ class LoginScreen extends StatelessWidget {
                                     fallback: (context) => const Center(
                                         child: CircularProgressIndicator()),
                                     builder: (context) => defaultButton(
-                                      text: "LOGIN",
+                                      text: AppStrings.sinIn,
                                       function: () {
                                         if (formKey.currentState!.validate()) {
                                           printMSG("Validated");
@@ -213,13 +239,17 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(
+                                    height: 5,
+                                  ),
+                                  drawSignInWithFacebookOrGoogle(context),
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Do not have an account",
+                                        AppStrings.doNotHaveAnAccount,
                                         style: Theme.of(context)
                                             .textTheme
                                             .overline
@@ -232,7 +262,7 @@ class LoginScreen extends StatelessWidget {
                                                   Colors.white),
                                         ),
                                         child: Text(
-                                          "REGISTER",
+                                          AppStrings.sinUp,
                                           style:
                                               TextStyle(color: defaultAppColor),
                                         ),
@@ -258,8 +288,77 @@ class LoginScreen extends StatelessWidget {
 
   buildTextHeading(BuildContext context) {
     return Text(
-      "LOGIN",
+      AppStrings.login.toUpperCase(),
       style: Theme.of(context).textTheme.headline2,
+    );
+  }
+
+  drawLoginRemember(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+          splashRadius: 10,
+          value: false,
+          onChanged: (value) {},
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(
+          AppStrings.rememberMe,
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
+      ],
+    );
+  }
+
+  drawSignInWithFacebookOrGoogle(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          AppStrings.or,
+          style: TextStyle(color: Colors.grey.shade600),
+        ),
+        const SizedBox(
+          height: 3,
+        ),
+        Text(AppStrings.signInWith,
+            style: TextStyle(color: Colors.grey.shade600)),
+        const SizedBox(
+          height: 3,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                //todo: Sign in with Facebook
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage(facebookLogoPath),
+                backgroundColor: Colors.transparent,
+                radius: 25,
+              ),
+            ),
+            const SizedBox(
+              width: 25,
+            ),
+            GestureDetector(
+              onTap: () async {
+                //todo: Sign in with Google
+                await LoginCubit.get(context).signInWithGoogle(context);
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage(googleLogoPath),
+                backgroundColor: Colors.transparent,
+                radius: 25,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
