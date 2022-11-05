@@ -6,13 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social/app_cubit/cubit.dart';
 import 'package:flutter_social/app_cubit/states.dart';
 import 'package:flutter_social/models/users_model.dart';
+import 'package:flutter_social/shared/components/app_constants.dart';
 import 'package:flutter_social/shared/components/components.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter_social/shared/cubit/app_cubit.dart';
 
 class ChatDetailsScreen extends StatelessWidget {
   static const String id = "ChatDetailsScreen";
 
- final UsersModel? usersModel;
+  final UsersModel? usersModel;
 
   ChatDetailsScreen({Key? key, this.usersModel}) : super(key: key);
   final TextEditingController messageController = TextEditingController();
@@ -65,67 +67,67 @@ class ChatDetailsScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       ConditionalBuilder(
-                          condition:
-                              SocialAppCubit.get(context).messages.isNotEmpty,
-                          fallback: (context) => Padding(
-                                padding: const EdgeInsets.only(top: 100),
-                                child: Center(
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        SocialAppCubit.get(context).sendMessage(
-                                            reciverId: usersModel?.uId,
-                                            dateTime: DateTime.now().toString(),
-                                            messageText: "Hi 👋");
-                                      },
-                                      child: Text(
-                                          "say hi 👋 to ${usersModel?.name}")),
-                                ),
-                              ),
-                          builder: (context) {
-                            return Expanded(
-                              child: ListView.separated(
-                                  padding: EdgeInsets.zero,
-                                  controller: scrollController,
-                                  shrinkWrap: true,
-                                  reverse: false,
-                                  keyboardDismissBehavior:
-                                      ScrollViewKeyboardDismissBehavior
-                                          .onDrag,
-                                  itemBuilder: (context, index) {
-                                    var message = SocialAppCubit.get(context)
-                                        .messages[index];
-                                    // SocialAppCubit.get(context).setLastMessageModel(message);
-                                    printMSG(
-                                        "Sender Id: ${message.senderId} Message:${message.messageText} Compare with Id: ${message.senderId}");
-                                    if (message.receiverId ==
-                                        usersModel?.uId) {
-                                      return buildSenderMessage(
-                                          message: message.messageText);
-                                    }
+                        condition:
+                            SocialAppCubit.get(context).messages.isNotEmpty,
+                        fallback: (context) => Padding(
+                          padding: const EdgeInsets.only(top: 100),
+                          child: Center(
+                            child: GestureDetector(
+                                onTap: () {
+                                  SocialAppCubit.get(context).sendMessage(
+                                      receiverId: usersModel?.uId,
+                                      dateTime: DateTime.now().toString(),
+                                      messageText: "Hi 👋");
+                                },
+                                child:
+                                    Text("say hi 👋 to ${usersModel?.name}")),
+                          ),
+                        ),
+                        builder: (context) {
+                          return Expanded(
+                            child: ListView.separated(
+                                addSemanticIndexes: true,
+                                physics: const BouncingScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                controller: scrollController,
+                                shrinkWrap: true,
+                                reverse: false,
+                                keyboardDismissBehavior:
+                                    ScrollViewKeyboardDismissBehavior.onDrag,
+                                itemBuilder: (context, index) {
+                                  var message = SocialAppCubit.get(context)
+                                      .messages[index];
+                                  // SocialAppCubit.get(context).setLastMessageModel(message);
+                                  printMSG(
+                                      "Sender Id: ${message.senderId} Message:${message.messageText} Compare with Id: ${message.senderId}");
+                                  if (message.receiverId == usersModel?.uId) {
+                                    return buildSenderMessage(
+                                        message: message.messageText);
+                                  }
 
-
-                                    return buildReceiverMessage(
+                                  return buildReceiverMessage(
                                       context: context,
-                                        message: message.messageText,
-                                        model: usersModel);
-                                  },
-                                  separatorBuilder: (context, index) {
-
-
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                  addAutomaticKeepAlives: true,
-                                  itemCount: SocialAppCubit.get(context)
-                                      .messages
-                                      .length),
-                            );
-                          }),
+                                      message: message.messageText,
+                                      model: usersModel);
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    height: 5,
+                                  );
+                                },
+                                addAutomaticKeepAlives: true,
+                                itemCount: SocialAppCubit.get(context)
+                                    .messages
+                                    .length),
+                          );
+                        },
+                      ),
                       SocialAppCubit.get(context).messages.isEmpty
                           ? const Spacer()
                           : Container(),
-                      buildEmojis(context),
+                      SocialAppCubit.get(context).emojiShowing
+                          ? buildEmojis(context)
+                          : Container(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -142,20 +144,21 @@ class ChatDetailsScreen extends StatelessWidget {
                                 onPressed: () {
                                   SocialAppCubit.get(context).hideShowEmoji();
                                 },
-                                child:
-                                    const Icon(Icons.emoji_emotions_outlined),
+                                child: const Icon(
+                                  Icons.emoji_emotions_outlined,
+                                  color: emojiIconColor,
+                                ),
                               ),
                               Expanded(
                                 child: TextFormField(
                                   onChanged: (value) {
-                                    printMSG("message controller text : $value");
+                                    printMSG(
+                                        "message controller text : $value");
                                     SocialAppCubit.get(context)
                                         .checkTextMessageIsEmpty(value);
                                     printMSG(value);
                                   },
-                                  onTap: () {
-
-                                  },
+                                  onTap: () {},
                                   controller: messageController,
                                   decoration: const InputDecoration(
                                       border: InputBorder.none,
@@ -175,9 +178,14 @@ class ChatDetailsScreen extends StatelessWidget {
                                 child: Icon(
                                   Icons.send,
                                   color: SocialAppCubit.get(context)
-                                          .isTextMessageEmpty||messageController.value.text.isEmpty
-                                      ? Colors.grey.shade100
-                                      : Colors.black,
+                                              .isTextMessageEmpty ||
+                                          messageController.value.text.isEmpty
+                                      ? AppCubit.get(context).isDark == true
+                                          ? darkThemePrimaryColor
+                                          : Colors.grey.shade100
+                                      : AppCubit.get(context).isDark == true
+                                          ? Colors.grey
+                                          : Colors.black,
                                 ),
                               ),
                             ],
@@ -255,7 +263,7 @@ class ChatDetailsScreen extends StatelessWidget {
     );
   }
 
-  _onEmojiSelected(Emoji emoji,{BuildContext? context}) {
+  _onEmojiSelected(Emoji emoji, {BuildContext? context}) {
     messageController
       ..text += emoji.emoji
       ..selection = TextSelection.fromPosition(
@@ -280,7 +288,7 @@ class ChatDetailsScreen extends StatelessWidget {
             height: 250,
             child: EmojiPicker(
                 onEmojiSelected: (Category category, Emoji emoji) {
-                  _onEmojiSelected(emoji,context: context);
+                  _onEmojiSelected(emoji, context: context);
                 },
                 onBackspacePressed: _onBackspacePressed,
                 config: Config(
@@ -317,7 +325,7 @@ class ChatDetailsScreen extends StatelessWidget {
 
   void _onSendMessagePressed(BuildContext context) {
     SocialAppCubit.get(context).sendMessage(
-        reciverId: usersModel?.uId,
+        receiverId: usersModel?.uId,
         dateTime: DateTime.now().toString(),
         messageText: messageController.text);
     messageController.text = "";
@@ -325,7 +333,6 @@ class ChatDetailsScreen extends StatelessWidget {
     if (SocialAppCubit.get(context).emojiShowing) {
       SocialAppCubit.get(context).hideShowEmoji();
     }
-
   }
 
 // _scrolldownBottomOfMessages(BuildContext context) {

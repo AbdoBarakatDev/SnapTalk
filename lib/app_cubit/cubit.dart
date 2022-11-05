@@ -545,21 +545,21 @@ class SocialAppCubit extends Cubit<SocialAppStates> {
   }
 
   sendMessage({
-    @required String? reciverId,
+    @required String? receiverId,
     @required String? dateTime,
     @required String? messageText,
   }) async {
     MessagesModel messageModel = MessagesModel(
         dateTime: dateTime,
         messageText: messageText,
-        receiverId: reciverId,
+        receiverId: receiverId,
         senderId: usersModel?.uId);
 
     await FirebaseFirestore.instance
         .collection(usersFirestoreCollectionName)
         .doc(usersModel?.uId)
         .collection(chatsFirestoreCollectionName)
-        .doc(reciverId)
+        .doc(receiverId)
         .collection(messagesFirestoreCollectionName)
         .add(messageModel.toMap())
         .then((value) {
